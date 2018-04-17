@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="blog">
+	<select id="getList" resultType="blogvo">
+ 	 <![CDATA[
+		select no,
+			   title,
+			   group_no as groupNo, 
+			   order_no as orderNo, 
+			   depth, 
+			   content, 
+			   write_date as writeDate, 
+			   hit, 
+			   user_no as userNo 
+		  from board 
+	  order by group_no desc,write_date desc, order_no
+ 	   ]]>
+	</select>
+
+	<select id="delete" parameterType="blogvo">
+ 	 <![CDATA[
+		delete from board where no=#{no}
+ 	   ]]>
+	</select>
+	<select id="getVoMaxGroupNo" resultType="long">
+ 	 <![CDATA[
+		SELECT max(group_no) FROM board
+ 	   ]]>
+	</select>
+	<!-- <select id="getVoMaxOrderNo" parameterType="Long"> <![CDATA[ SELECT 
+		max(order_no) FROM board where group_no=#{no} ]]> </select> -->
+
+	<select id="getByNo" parameterType="long" resultType="blogvo">
+ 	 <![CDATA[
+		SELECT no,title,logo_path as logoPath,introduction FROM blog where no = #{no};
+ 	   ]]>
+	</select>
+	<insert id="insert" parameterType="blogvo">
+ 	 <![CDATA[
+		insert into blog value(#{no},#{title},#{logoPath},#{introduction}) 
+	   ]]>
+	</insert>
+
+	<update id="update" parameterType="blogvo">
+	 	 <![CDATA[
+	 	  update blog set title=#{title},logo_path=#{logoPath} where no = #{no};
+	 	 ]]>
+	</update>
+
+	<update id="modify" parameterType="blogvo">
+	 	 <![CDATA[
+	 	  update board set title=#{title}, content=#{content} where no = #{no}
+	 	 ]]>
+	</update>
+	
+		<update id="upOrderNo" parameterType="blogvo">
+	 	 <![CDATA[
+	 	  update board set order_no=order_no+1 where group_no = #{groupNo} and order_no>=#{orderNo}
+	 	 ]]>
+	</update>
+</mapper>
